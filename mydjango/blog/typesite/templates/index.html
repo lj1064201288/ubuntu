@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>用户信息</title>
+    </head>
+    <body>
+        <h3><a href="/admin/">Admin</a></h3>
+        <ul>
+            {% for user in users %}
+                <li>{{ user.user_full_name }} - {{ user.createby }}</li>
+            {% endfor %}
+        </ul>
+        <hr />
+        <form action="/" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Submit" />
+        </form>
+
+    </body>
+</html>

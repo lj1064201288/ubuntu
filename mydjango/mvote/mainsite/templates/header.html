@@ -1,0 +1,24 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <div class="navbar-brand" align="center">
+                投趣网
+            </div>
+        </div>
+        {% load account %}
+        <ul class="nav navbar-nav">
+            <li class="active">
+                <a href="/"><b>Home</b></a>
+            </li>
+            {% if user.is_authenticated %}
+                <li><a href="/accounts/logout"><b>注销</b></a></li>
+            {% else %}
+                <li><a href="/accounts/signup"><b>注册</b></a></li>
+                <li><a href="/accounts/login"><b>登录</b></a></li>
+            {% endif %}
+                <li>
+                    <a href="/admin"><b>后台管理</b></a>
+                </li>
+        </ul>
+    </div>
+</nav>
