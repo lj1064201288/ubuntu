@@ -3,6 +3,7 @@
 {% block title %}主页{% endblock %}
 {% block content %}
 <div class="container">
+    {{today}}
     {% for message in messages %}
         <div class="alert alert-{{message.tags}}">{{message}}</div>
     {% endfor %}
@@ -10,54 +11,70 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading" align="center">
-                    <h3>欢迎光临小熊猫商城</h3>
-                    <p>欢迎使用Github注册/登录注册您的账号，可拥有投票与制作投票的权限</p>
+                    <h3>欢迎光临小熊猫商城 <br /> 【{{category.name | default:'全部商品'}}】</h3>
+                    {% if user.is_authenticated%}
+                        {% if user.socialaccount_set.all.0.extra_data.name %}
+                            {{user.socialaccount_set.all.0.extra_data.name}} <br />
+                            <img src="{{user.socialaccount_set.all.0.get_avatar_url}}" width="100">
+                        {% else %}
+                            Welcome: {{user.username}}
+                        {% endif %}
+                    {% else %}
+                        <p>欢迎使用Github注册/登录注册您的账号，可拥该买本站的商品</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        {% load account %}
-        {% for poll in polls %}
-            {% if forloop.first %}
-                <div class="list-group">
-            {% endif %}
-                    <a href="{% url 'poll-url' poll.id %}" class="list-group-item">
-                        <span class="glyphicon glyphicon-edit"></span>
-                        总票数:{{poll.id | show_votes}},
-                        总选项:{{poll.id | show_items}}:
-                        {{poll.name}} added by 【{{poll.user}}】.
-                        created at {{poll.created_at}}
 
-                    </a>
-
-            {% empty %}
-                <p>尚未有人发布投票</p>
-            {% if forloop.last %}
-                </div>
-            {% endif %}
-        {% endfor %}
-    </div>
     <div class="row">
         <button class="btn btn-info">
-            目前是第{{polls.number}}页
+            目前是第{{products.number}}页
         </button>
-        {% if polls.has_previous %}
+        {% if products.has_previous %}
             <button class="btn btn-info">
                 <a href="?page=1">首页</a>
             </button>
             <button class="btn btn-info">
-                <a href="?page={{polls.previous_page_number}}">上一页</a>
+                <a href="?page={{products.previous_page_number}}">上一页</a>
             </button>
         {% endif %}
-        {% if polls.has_next %}
+        {% if products.has_next %}
             <button class="btn btn-info">
-                <a href="?page={{polls.next_page_number}}">下一页</a>
+                <a href="?page={{products.next_page_number}}">下一页</a>
             </button>
             <button class="btn bt-info">
-                <a href="?page={{polls.end_index}}">末页</a>
+                <a href="?page={{products.end_index}}">末页</a>
             </button>
         {% endif %}
+    </div>
+
+    <div class="row">
+        {% load account %}
+        {% for product in products %}
+           {% cycle '<div class="row">' '' '' '' %}
+                <div class="col-md-3 col-sm-3 col-xs-3">
+                    <div class="thumbnail">
+                        <a href="{% url 'product-url' product.id %}">
+                            <img src="{{product.image.url}}" width="150">
+                        </a>
+                        <div class="caption">
+                            <h4><a href ="{% url 'product-url' product.id %}">{{product.name}}</a> </h4>
+                            <p>NT$:{{product.price}}</p>
+                            <p>库存:{{product.stock}}</p>
+                            <p>{{product.description | truncatechars:40}}</p>
+                            <button class="btn btn-primary">放入购物车</button>
+                        </div>
+                    </div>
+                </div>
+            {% cycle '' '' '' '</div>' %}
+        {% empty %}
+            <div class="row">
+                <div class="col-sm-12" align="center">
+                    <h3>此分类没有相关的产品</h3>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

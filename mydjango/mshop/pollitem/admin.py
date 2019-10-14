@@ -4,15 +4,9 @@ from .models import *
 
 # Register your models here.
 
-@admin.register(Poll)
-class PollAdmin(admin.ModelAdmin):
-    list_display = ('name', 'created_at',)
-    ordering = ('-created_at',)
+@admin.register(Products)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('category', 'name', 'sku', 'stock', 'price')
+    ordering = ('category',)
 
-@admin.register(PollItem)
-class PollItemAdmin(admin.ModelAdmin):
-    list_display = ('poll', 'name', 'vote', )
-
-
-
-admin.site.register(VoteCheck)
+admin.site.register(Category)

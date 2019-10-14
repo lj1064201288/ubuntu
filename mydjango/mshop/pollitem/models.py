@@ -1,25 +1,28 @@
 from django.db import models
 from django.contrib.auth.models import User
+from filer.fields.image import FilerImageField
 
 # Create your models here.
 
 
-class Poll(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200, verbose_name='话题')
-    created_at = models.DateTimeField(auto_now_add=True)
-    enabled = models.BooleanField(default=False)
+class Category(models.Model):
+    name = models.CharField(max_length=200)
 
     def __str__(self):
         return self.name
 
-class PollItem(models.Model):
-    poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50)
-    vote = models.PositiveIntegerField(default=0)
-    images_url = models.ImageField(blank=True, upload_to='pollitem/static/user_images')
 
-class VoteCheck(models.Model):
-    userid = models.PositiveIntegerField()
-    pollid = models.PositiveIntegerField()
-    vote_time = models.DateField()
+class Products(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    sku = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
+    description = models.TextField()
+    image = FilerImageField(related_name='product_image')
+    website = models.URLField(null=True)
+    stock = models.PositiveIntegerField(default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def __str__(self):
+        return self.name
+
+

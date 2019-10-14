@@ -27,6 +27,66 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# 是否支持缩略图部分
+THUMBNAIL_HIGH_RESOLUTION = True
+
+# 处理缩略图的部分
+THUMBNAIL_PROCESSORS = (
+    'easy_thumbnails.processors.colorspace',
+    'easy_thumbnails.processors.autocrop',
+    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
+    'easy_thumbnails.processors.filters',
+)
+
+# 处理上传的文件
+FILER_STORAGES = {
+    'public':{
+        'main':{
+            'ENGINE': 'filer.storage.PublicFileSystemStorage',
+            'OPTIONS':{
+                'location': '/home/tlxy/tulingxueyuan/Django_notebook/mydjango/mshop/media/filer',
+                'base_url': '/media/filer',
+            },
+            'UPLOAD_TO': 'filer.utils.generate_filename.randomized',
+            'UPLOAD_TO_PREFIX': 'filer_public',
+        },
+        'thumbnails':{
+            'ENGINE':'filer.storage.PublicFileSystemStorage',
+            'OPTIONS': {
+                'location': '/home/tlxy/tulingxueyuan/Django_notebook/mydjango/mshop/media/filer_thumbnails',
+                'base_url': '/media/filer_thumbnails',
+            },
+        },
+    },
+
+    'private': {
+        'main': {
+            'ENGINE': 'filer.storage.PrivateFileSystemStorage',
+            'OPTIONS': {
+                'location': '/home/tlxy/tulingxueyuan/Django_notebook/mydjango/mshop/media/smedia/filer',
+                'base_url': '/smedia/filer',
+            },
+            'UPLOAD_TO': 'filer.utils.generate_filename.randomized',
+            'UPLOAD_TO_PREFIX': 'filer_public',
+        },
+        'thumbnails': {
+            'ENGINE': 'filer.storage.PrivateFileSystemStorage',
+            'OPTIONS': {
+                'location': '/home/tlxy/tulingxueyuan/Django_notebook/mydjango/mshop/media/smedia/filer_thumbnails',
+                'base_url': '/smedia/filer_thumbnails',
+            },
+        },
+    },
+
+}
+
+# media存储位置
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/home/tlxy/tulingxueyuan/Django_notebook/mydjango/mshop/media'
+
+# session浏览保留数据
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 
 # Application definition
 
@@ -38,6 +98,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pollitem',
+    'cart',
+    'easy_thumbnails',
+    'filer',
+    'mptt',
     'allauth',
     'django.contrib.sites',
     'allauth.account',
@@ -84,9 +148,9 @@ WSGI_APPLICATION = 'socialitem.wsgi.application'
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+        'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'social',
+        'NAME': 'mshop',
         'HOST':'localhost',
         'POST':'3306',
         'USER': 'root',
@@ -135,6 +199,7 @@ EMAIL_USE_TLS = True
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory' # 强制注册邮箱验证(注册成功后，会发送一封验证邮件，用户必须验证邮箱后，才能登陆)
 ACCOUNT_EMAIL_REQUIRED = True           # 设置用户注册的时候必须填写邮箱地址
 ACCOUNT_LOGOUT_ON_GET = False           # 用户登出(需要确认)
+
 
 # AUTHENTICATION_BACKENDS = (
 #     'django.contrib.auth.backends.ModelBackend',
